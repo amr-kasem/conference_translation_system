@@ -100,7 +100,24 @@ class ConferenceManagementRepository(ABC):
         Update a user's language in a conference.
         """
         
-
+    def add_language(self, language: LanguageData) -> None:
+        """
+        Add a user to a specific conference.
+        """
+        pass
+    
+    def delete_language(self, language: LanguageData) -> None:
+        """
+        Add a user to a specific conference.
+        """
+        pass
+    
+    def get_languages(self) -> list[LanguageData]:
+        """
+        Add a user to a specific conference.
+        """
+        pass
+    
     @abstractmethod
     def migrate_db(self) -> bool:
         """

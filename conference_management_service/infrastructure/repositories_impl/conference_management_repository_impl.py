@@ -3,6 +3,7 @@ from injector import inject
 from typing import List
 from infrastructure.data_sources.data_persistance.persistance_datasource import PersistanceDataSource
 from infrastructure.mappers.user_register_mapper import UserRegisterModelMapper
+from infrastructure.mappers.language_model_mapper import LanguageModelMapper
 from domain.repositories.conference_management_repository import ConferenceManagementRepository
 from domain.value_objects.language import LanguageData
 from domain.value_objects.attendance_data import AttendanceData
@@ -13,9 +14,14 @@ from domain.entities.conference import Conference
 # Abstract Base DataSource class for Conferences and Users
 class ConferenceManagementRepositoryImpl(ConferenceManagementRepository):
     @inject
-    def __init__(self, data_source:PersistanceDataSource, user_register_mapper:UserRegisterModelMapper):
+    def __init__(self,
+                 data_source:PersistanceDataSource,
+                 user_register_mapper:UserRegisterModelMapper,
+                 language_mapper: LanguageModelMapper,
+                ):
         self.data_source = data_source
         self.register_mapper = user_register_mapper
+        self.language_mapper = language_mapper
     def get_conferences(self) -> List[Conference]:
         """
         Retrieve the list of all conferences.
@@ -112,7 +118,27 @@ class ConferenceManagementRepositoryImpl(ConferenceManagementRepository):
         """
         Update a user's language in a conference.
         """
-        
+
+    def add_language(self, language: LanguageData) -> None:
+        """
+        Add a user to a specific conference.
+        """
+        language_model = self.language_mapper.to_model(language)
+        self.data_source.add_language(language=language_model)
+        pass
+    
+    def delete_language(self, language: LanguageData) -> None:
+        """
+        Add a user to a specific conference.
+        """
+        pass
+    
+    def get_languages(self) -> list[LanguageData]:
+        """
+        Add a user to a specific conference.
+        """
+        pass
+    
         
     def migrate_db(self) -> bool:
         """

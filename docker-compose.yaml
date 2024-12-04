@@ -1,0 +1,49 @@
+services:
+  nats:
+    image: nats:latest
+    ports:
+      - "4222:4222"       # NATS client connection port
+      - "6222:6222"       # NATS cluster port
+      - "8222:8222"       # NATS monitoring port (HTTP)
+    restart: always
+    volumes:
+      - nats_data:/data   # Persistent storage for NATS data
+
+  management-service:
+    build: ./conference_management_service
+    ports:
+      - "8000:8000"   
+
+    # command: ["python3", "main.py", "migrate"] # for migration only
+    entrypoint: /bin/bash
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    volumes:
+      - ./conference_management_service:/app
+    depends_on: 
+      - db_server
+    
+  db_server:
+    image: postgres:latest # Use the official PostgreSQL image
+    environment:
+      POSTGRES_USER: admin         # Set the database username
+      POSTGRES_PASSWORD: password # Set the database password
+      POSTGRES_DB: translator_db      # Set the database name
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persist data in a Docker volume
+  
+  pgadmin:
+    image: dpage/pgadmin4  # Use the official pgAdmin 4 image
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com  # Set the admin email
+      PGADMIN_DEFAULT_PASSWORD: admin         # Set the admin password
+    ports:
+      - "8080:80"  # Expose pgAdmin on port 8080
+    depends_on:
+      - db_server  # Ensure pgAdmin waits for PostgreSQL to be ready
+
+
+volumes:
+  nats_data:
+  postgres_data:
+

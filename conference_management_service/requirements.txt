@@ -1,0 +1,6 @@
+injector
+uvicorn
+fastapi
+nats-py
+psycopg2-binary
+sqlalchemy

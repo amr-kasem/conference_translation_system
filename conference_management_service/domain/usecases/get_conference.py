@@ -1,0 +1,2 @@
+class GetConference:
+    pass

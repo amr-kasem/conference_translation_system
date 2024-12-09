@@ -1,9 +1,12 @@
+from io import BytesIO
+from typing import Optional
 import qrcode
-from PIL import Image
+
+from infrastructure.data_sources.qr_generator.qr_generator import QRcodeGenerator
 
 class QRcodeGeneratorImpl(QRcodeGenerator):
     
-    def get_qr_for_conference(self, conference_id: str) -> Optional[Image]:
+    def get_qr_for_conference(self, conference_id: str) -> Optional[BytesIO]:
         """
         Generate a QR code for the conference with the given ID.
         
@@ -27,7 +30,10 @@ class QRcodeGeneratorImpl(QRcodeGenerator):
             
             # Create an image from the QR Code
             img = qr.make_image(fill='black', back_color='white')
-            return img
+            buffered = BytesIO()
+            img.save(buffered, format="PNG")
+            buffered.seek(0)  # Reset pointer to the beginning
+            return buffered
         except Exception as e:
             print(f"Failed to generate QR code: {e}")
             return None

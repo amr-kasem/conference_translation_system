@@ -1,5 +1,5 @@
 from injector import inject
-from domain.usecases.migrate import Migrate
+from domain.usecases.maintanance.migrate import Migrate
 
 
 class MigrationServices:

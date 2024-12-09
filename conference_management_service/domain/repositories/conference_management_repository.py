@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import List
+from io import BytesIO
+from typing import List, Optional
 from domain.value_objects.language import LanguageData
 from domain.value_objects.attendance_data import AttendanceData
-from domain.value_objects.register_user import UserRegister
+from domain.value_objects.user import UserData
 from domain.value_objects.user import UserData
 from domain.entities.conference import Conference
 # Abstract Base DataSource class for Conferences and Users
@@ -16,7 +17,35 @@ class ConferenceManagementRepository(ABC):
         pass
     
     @abstractmethod
-    def add_new_conference(self, conference: Conference) -> None:
+    def cache_conference(self, conference: Conference) -> None:
+        """
+        Retrieve the list of all conferences.
+        Must return a list of Conference objects.
+        """
+        pass
+    
+    @abstractmethod
+    def get_conference(self, conference_id: str) -> Optional[Conference]:
+        """
+        Retrieve the list of all conferences.
+        Must return a list of Conference objects.
+        """
+        pass
+    
+    @abstractmethod
+    def get_cached_conference(self, conference_id: str) -> Optional[Conference]:
+        """
+        Retrieve the list of all conferences.
+        Must return a list of Conference objects.
+        """
+        pass
+    
+    @abstractmethod
+    def get_qr_for_conference(self, conference_id: str)-> BytesIO:
+        pass
+    
+    @abstractmethod
+    def add_conference(self, conference: Conference) -> None:
         """
         Add a new conference.
         Takes a Conference object and adds it to the data source.
@@ -24,7 +53,7 @@ class ConferenceManagementRepository(ABC):
         pass
 
     @abstractmethod
-    def update_conference(self, conference_id: int, new_name: str) -> bool:
+    def update_conference(self, conference:Conference) -> bool:
         """
         Update a conference's name based on the conference ID.
         Returns True if the conference was updated, False if not found.
@@ -32,7 +61,7 @@ class ConferenceManagementRepository(ABC):
         pass
 
     @abstractmethod
-    def delete_conference(self, conference_id: int) -> bool:
+    def delete_conference(self, conference_id: str) -> bool:
         """
         Delete a conference based on the conference ID.
         Returns True if the conference was deleted, False if not found.
@@ -41,7 +70,7 @@ class ConferenceManagementRepository(ABC):
 
 
     @abstractmethod
-    def add_user(self, user: UserRegister) -> None:
+    def add_user(self, user: UserData) -> None:
         """
         Register new user
         """
@@ -73,7 +102,7 @@ class ConferenceManagementRepository(ABC):
         pass
 
     @abstractmethod
-    def add_user_to_conference(self, attendance: AttendanceData) -> None:
+    def add_user_to_conference(self, attendance: AttendanceData, conference_id: str) -> None:
         """
         Add a user to a conference, with the user's language and conference details.
         """
@@ -99,22 +128,24 @@ class ConferenceManagementRepository(ABC):
         """
         Update a user's language in a conference.
         """
-        
+
+    def get_attendance(self, attendance_id:str) -> Optional[AttendanceData]:
+        pass
     def add_language(self, language: LanguageData) -> None:
         """
-        Add a user to a specific conference.
+        Add a language to supported languages.
         """
         pass
     
-    def delete_language(self, language: LanguageData) -> None:
+    def delete_language(self, language_id: str) -> None:
         """
-        Add a user to a specific conference.
+        Delete a language by id.
         """
         pass
     
     def get_languages(self) -> list[LanguageData]:
         """
-        Add a user to a specific conference.
+        get all languages.
         """
         pass
     

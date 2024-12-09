@@ -17,3 +17,4 @@ EXPOSE 8000
 
 # Set the default command to run the FastAPI app using Uvicorn
 CMD ["python3", "main.py", "--api-host", "0.0.0.0", "--api-port", "8000","--messaging-host", "nats", "--messaging-port", "4222", "start"]
+# python3 main.py --api-host 0.0.0.0 --api-port 8000 --messaging-host nats --messaging-port 4222 start

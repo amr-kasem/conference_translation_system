@@ -1,12 +1,12 @@
 import uvicorn
 from injector import inject
-from presentation.api import ApiServices
-from presentation.messaging import MessagingServices
+from presentation.api.rest_api import  RestApi
+from presentation.messaging.messaging import MessagingServices
 from presentation.migrate import MigrationServices
 
 class InstantTranslationApp:
     @inject
-    def __init__(self,api:ApiServices,messaging: MessagingServices,migration: MigrationServices):
+    def __init__(self,api:RestApi,messaging: MessagingServices,migration: MigrationServices):
         self.api = api
         self.messaging = messaging
         self.migration = migration

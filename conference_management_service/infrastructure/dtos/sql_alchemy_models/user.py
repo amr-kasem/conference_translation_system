@@ -2,6 +2,7 @@ import uuid
 from sqlalchemy import  Column, String, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
+
 from infrastructure.dtos.sql_alchemy_models.base import Base
 
 class UserModel(Base):

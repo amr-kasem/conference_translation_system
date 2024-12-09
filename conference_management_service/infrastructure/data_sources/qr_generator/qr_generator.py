@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
-from PIL import Image  # Import the Pillow Image class
+from io import BytesIO
 from typing import Optional
 
 class QRcodeGenerator(ABC):
     
     @abstractmethod
-    def get_qr_for_conference(self, conference_id: str) -> Optional[Image]:
+    def get_qr_for_conference(self, conference_id: str) -> Optional[BytesIO]:
         """
         Generate a QR code for a specific conference using its ID.
         

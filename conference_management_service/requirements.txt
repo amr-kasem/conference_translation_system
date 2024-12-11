@@ -6,3 +6,4 @@ psycopg2-binary
 sqlalchemy
 qrcode
 pillow
+gradio_client

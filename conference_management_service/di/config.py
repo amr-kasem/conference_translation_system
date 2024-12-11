@@ -1,6 +1,6 @@
 from domain.usecases.user.end_speech import FinishSpeech
 from domain.usecases.user.raise_hand import RaiseHand
-from presentation.app import InstantTranslationApp
+from conference_management_service.presentation.app import InstantTranslationApp
 from presentation.api.controllers.attendance_controller import AttendanceController
 from presentation.api.controllers.conference_controller import ConferenceController
 from presentation.api.controllers.language_controller import LanguageController

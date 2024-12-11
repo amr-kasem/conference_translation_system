@@ -1,6 +1,7 @@
 from dataclasses import replace
 from datetime import datetime
 from typing import Callable, Optional
+from domain.value_objects.speaker_change_data import SpeakerChangeData
 from domain.value_objects.user import UserData
 from domain.value_objects.attendance_data import AttendanceData
 from domain.value_objects.translation_meta import TranslationMeta
@@ -13,7 +14,7 @@ class Conference:
         self._initialized = False
         self.translation_meta = None
         self.running = False
-        self.speaker_callback :Optional[Callable[[str],None]] = None
+        self.speaker_callback :Optional[Callable[[SpeakerChangeData],None]] = None
         
     def add_attendee(self,attendee: AttendanceData):
         if not self._initialized:
@@ -30,12 +31,22 @@ class Conference:
         except:
             pass
         if next_speaker is None:
-            self.speaker_callback('<NOSPEAKER>')
+            self.speaker_callback(
+                SpeakerChangeData(
+                    conference_id=self.data.id,
+                    speaker_id='<NOSPEAKER>',
+                )
+            )
             raise Exception('No speaker in the queue')
         if self.data.speaker is None:
             self.data = replace(self.data,speaker = next_speaker)
             self.translation_meta = replace(self.translation_meta, speaker = next_speaker.id)
-            self.speaker_callback(next_speaker.id)
+            self.speaker_callback(
+                SpeakerChangeData(
+                    conference_id=self.data.id,
+                    speaker_id=next_speaker.id,
+                )
+            )
         else :
             raise Exception('Wait until other finish')
         
@@ -78,7 +89,7 @@ class Conference:
         return langs
 
     
-    def init(self, speaker_callback: Callable[[str],None]):
+    def init(self, speaker_callback: Callable[[SpeakerChangeData],None]):
         if speaker_callback is None:
             raise Exception('Speaker change callback is not set')
         self.translation_meta = TranslationMeta(

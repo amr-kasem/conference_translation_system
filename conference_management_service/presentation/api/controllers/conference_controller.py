@@ -1,11 +1,13 @@
-from uuid import UUID
-from domain.value_objects.intialize_conference_request import InitializeConferenceRequest
-from domain.usecases.conference.end_conference import StopConference
-from domain.usecases.conference.start_conference import StartConference
 from fastapi import  HTTPException
 from fastapi.responses import StreamingResponse
 
 from injector import inject
+
+from domain.value_objects.speaker_change_data import SpeakerChangeData
+from presentation.rtc_services.rtc_services import RTCServices
+from domain.value_objects.intialize_conference_request import InitializeConferenceRequest
+from domain.usecases.conference.end_conference import StopConference
+from domain.usecases.conference.start_conference import StartConference
 
 from domain.usecases.conference.get_conferences import GetConferences
 from domain.usecases.conference.add_conference import AddConference
@@ -26,7 +28,8 @@ class ConferenceController:
                     get_qr: GetConferenceQr,
                     delete_conference: DeleteConference,
                     conference_mapper: ConferenceDtoMapper,
-                    messaging: MessagingServices
+                    messaging: MessagingServices,
+                    rtc_services: RTCServices,
                  ) -> None:
         self.add_conference = add_conference
         self.get_conferences = get_conferences
@@ -34,6 +37,7 @@ class ConferenceController:
         self.conference_mapper = conference_mapper
         self.get_qr = get_qr
         self.messaging = messaging
+        self.rtc_services = rtc_services
         self.start = start
         self.stop = stop
 
@@ -88,20 +92,21 @@ class ConferenceController:
         except Exception as e:
             # Handle any exceptions and raise HTTP 503 service unavailable error
             raise HTTPException(status_code=503, detail=f"Error registering user: {str(e)}")
-        
+    
+    def speaker_callback(self, speaker:SpeakerChangeData):
+        self.messaging.speaker_callback(speaker)
+        self.rtc_services.change_speaker(speaker)
+    
     async def start_conference(self, conference_id: str):
         """Endpoint to add new conference."""
         try:
         # For simplicity, let's simulate a user registration
         # This can be replaced with actual logic such as saving to a database
-            if self.messaging.new_conference_controller(conference_id=conference_id):
-                conf_msg_controller = self.messaging.conferences[UUID('{' + conference_id + '}')]
-                self.start(InitializeConferenceRequest(conference_id=conference_id,on_speaker_change=conf_msg_controller.speaker_callback))
-                await conf_msg_controller.start()
-                # Return success response
-                return {"message": 'success'}
-            else:
-                return {"message": 'failure'}
+            self.start(InitializeConferenceRequest(conference_id=conference_id,on_speaker_change=self.speaker_callback))
+            self.rtc_services.add_callee(conference_id=conference_id)
+            # Return success response
+            return {"message": 'success'}
+        
 
         except Exception as e:
             print(e)
@@ -114,10 +119,8 @@ class ConferenceController:
         try:
         # For simplicity, let's simulate a user registration
         # This can be replaced with actual logic such as saving to a database
-            conf_msg_controller = self.messaging.conferences[UUID('{' + conference_id + '}')]
             self.stop(id=conference_id)
-            await conf_msg_controller.stop()
-            self.messaging.remove_conference(conf_msg_controller.conference_id)
+            self.rtc_services.remove_callee(conference_id=conference_id)
             # Return success response
             return {"message": 'success'}
 

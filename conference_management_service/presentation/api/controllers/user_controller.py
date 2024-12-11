@@ -3,7 +3,6 @@ from fastapi import  HTTPException
 from injector import inject
 
 from domain.usecases.user.end_speech import FinishSpeech
-from presentation.api.dtos.attendance.attendance_request import AttendanceRequestDto
 from domain.usecases.user.register_user import RegisterUser
 from domain.usecases.user.raise_hand import RaiseHand
 from presentation.api.mappers.user_mapper import UserMapper

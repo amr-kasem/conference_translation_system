@@ -1,6 +1,7 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from injector import inject
 from presentation.messaging.messaging import MessagingServices
+from presentation.rtc_services.rtc_services import RTCServices
 from presentation.api.controllers.user_controller import UserController
 from presentation.api.controllers.language_controller import LanguageController
 from presentation.api.controllers.conference_controller import ConferenceController
@@ -22,7 +23,7 @@ class RestApi:
         self.attendance_controller = attendance_controller
 
 
-    def init(self,messaging_interface : MessagingServices):
+    def init(self,messaging_interface : MessagingServices,rtc_services: RTCServices):
         self.messaging_interface = messaging_interface
 
         # user routes

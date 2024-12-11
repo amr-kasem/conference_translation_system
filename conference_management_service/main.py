@@ -28,8 +28,30 @@ class CliApp:
         self.parser.add_argument(
             "--messaging-port",
             type=int,
-            default=8000,
-            help="Port of the NATS server (default: 8000)"
+            default=4222,
+            help="Port of the NATS server (default: 4222)"
+        )
+        self.parser.add_argument(
+            "--vad-host",
+            default="127.0.0.1",
+            help="Host of the VAD server (default: 127.0.0.1)"
+        )
+        self.parser.add_argument(
+            "--vad-port",
+            type=int,
+            default=4222,
+            help="Port of the VAD server (default: 4222)"
+        )
+        self.parser.add_argument(
+            "--translation-host",
+            default="127.0.0.1",
+            help="Host of the Translation server (default: 127.0.0.1)"
+        )
+        self.parser.add_argument(
+            "--translation-port",
+            type=int,
+            default=7860,
+            help="Port of the Translation server (default: 7860)"
         )
         self.injector = injector  # Injector instance
         self.app: InstantTranslationApp = self.injector.get(InstantTranslationApp)
@@ -38,7 +60,16 @@ class CliApp:
         """Run the InstantTranslationApp with the provided arguments."""
         # Instantiate your Api and MessagingInterface objects
         # Run the app using uvicorn with the provided host and port
-        self.app.start(api_host=args.api_host, api_port=args.api_port,messaging_host=args.messaging_host,messaging_port=args.messaging_port)
+        self.app.start(
+            api_host=args.api_host,
+            api_port=args.api_port,
+            messaging_host=args.messaging_host,
+            messaging_port=args.messaging_port,
+            vad_host=args.vad_host,
+            vad_port=args.vad_port,
+            translation_host=args.translation_host,
+            translation_port=args.translation_port,
+        )
 
     def help(self):
         """Display help information."""

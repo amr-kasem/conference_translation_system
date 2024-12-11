@@ -36,6 +36,7 @@ class ConferenceManagementRepositoryImpl(ConferenceManagementRepository):
         self.language_mapper = language_mapper
         self.attendance_mapper = attendance_mapper
         self.conference_mapper = conference_mapper
+        
     def get_conferences(self) -> List[Conference]:
         """
         Retrieve the list of all conferences.
